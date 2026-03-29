@@ -195,7 +195,7 @@ The system includes 20 configurable reports filterable by date range. Chart type
 │   ├── payments.html
 │   ├── payment_view.html
 │   └── reports.html
-└── __docs/
+└── docs/
     ├── erd.png
     ├── Login.png
     ├── Home.png
