@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Deleted Suppliers{% endblock %}
+{% block content %}
+<h1>Deleted Suppliers</h1>
+<table>
+  <tr>
+    <th>ID</th><th>Name</th><th>Location</th><th>Phone Number</th><th>Email</th><th>⚙️</th>
+  </tr>
+  {%for s in suppliers%}
+  <tr>
+    <td>{{ s[0] }}</td><td>{{ s[1] }}</td><td>{{ s[2] }}</td><td>{{ s[3] }}</td><td>{{ s[4] }}</td>   <td>
+<form action = {{ url_for('suppliers_recover', sup_id = s[0]) }} method="post">
+  <button class="btn" type = "submit">Recover</button></form></td>
+  </tr>
+  {% endfor %}
+</table>
+<form action ={{ url_for('suppliers') }} method="get">
+  <button class="btn" type = "submit">Go back to suppliers table</button></form>
+{% endblock %}

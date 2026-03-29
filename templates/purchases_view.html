@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Purchase View{% endblock %}
+{% block content %}
+<h1>Purchase #{{ purchase[0] }}</h1>
+
+<p>
+  <b>Date:</b> {{ purchase[1] }}<br>
+  <b>Warehouse:</b> {{ purchase[3] }} (ID#{{ purchase[2] }})<br>
+  <b>Supplier:</b> {{ purchase[5] }} (ID#{{ purchase[4] }})<br>
+  <b>Employee:</b> {{ purchase[7] }} (ID#{{ purchase[6] }})<br>
+</p>
+
+<h3>Details</h3>
+<table>
+  <tr>
+    <th>Product</th>
+    <th>Quantity</th>
+    <th>Kg Price</th>
+    <th>Line Total</th>
+  </tr>
+  {% for d in details %}
+  {% set line = (d[4] or 0) * (d[5] or 0) %}
+  <tr>
+    <td>{{ d[3] }} (ID#{{ d[2] }})</td>
+    <td>{{ d[4] }}</td>
+    <td>{{ '%.2f'|format(d[5] or 0) }}</td>
+    <td>{{ '%.2f'|format(line) }}</td>
+  </tr>
+  {% endfor %}
+  <tr>
+    <td colspan="3"><b>Total</b></td>
+    <td><b>{{ '%.2f'|format(total) }}</b></td>
+  </tr>
+</table>
+
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Stock{% endblock %}
+{% block content %}
+<h1>Stock</h1>
+
+{% if session.get('access_level') == 'admin' %}
+<form method="get" style="display:flex; gap: 10px; align-items:center; flex-wrap:wrap;">
+  <div>
+    <label>Warehouse</label><br>
+    <select name="warehouse_id" class="js-example-basic-single" style="width: 220px;">
+      <option value="">All Warehouses</option>
+      {% for wid, wname in warehouses %}
+        <option value="{{ wid }}" {% if wh_filter and (wh_filter|string)==(wid|string) %}selected{% endif %}>{{ wname }} - ID#{{ wid }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div>
+    <label>Branch</label><br>
+    <select name="branch_id" class="js-example-basic-single" style="width: 220px;">
+      <option value="">All Branches</option>
+      {% for bid, bname in branches %}
+        <option value="{{ bid }}" {% if br_filter and (br_filter|string)==(bid|string) %}selected{% endif %}>{{ bname }} - ID#{{ bid }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div style="margin-top:22px;">
+    <button class="btn" type="submit">Filter</button>
+  </div>
+</form>
+<script>
+$(document).ready(function() {
+  $('.js-example-basic-single').select2();
+});
+</script>
+{% endif %}
+
+<h3>Warehouse Stock</h3>
+<table>
+  <tr>
+    <th>Warehouse</th><th>Product</th><th>Quantity</th>
+  </tr>
+  {% for ws in warehouse_stock %}
+  <tr>
+    <td>{{ ws[1] }} (ID#{{ ws[0] }})</td>
+    <td>{{ ws[3] }} (ID#{{ ws[2] }})</td>
+    <td>{{ ws[4] }}</td>
+  </tr>
+  {% endfor %}
+</table>
+
+<h3>Branch Stock</h3>
+<table>
+  <tr>
+    <th>Branch</th><th>Product</th><th>Quantity</th>
+  </tr>
+  {% for bs in branch_stock %}
+  <tr>
+    <td>{{ bs[1] }} (ID#{{ bs[0] }})</td>
+    <td>{{ bs[3] }} (ID#{{ bs[2] }})</td>
+    <td>{{ bs[4] }}</td>
+  </tr>
+  {% endfor %}
+</table>
+
+{% endblock %}

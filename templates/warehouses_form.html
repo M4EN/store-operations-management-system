@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}{% if mode=='edit' %}Edit Warehouse{% else %}New Warehouse{% endif %}{% endblock %}
+{% block content %}
+<h1>{% if mode=='edit' %}Edit Warehouse{% else %}New Warehouse{% endif %}</h1>
+
+<form method="post">
+  {% if warehouse %}
+  <p>
+    <label>Warehouse ID</label><br>
+    <input name="warehouse_id" value="{{ warehouse[0] }}" readonly>
+  </p>
+  {% endif %}
+
+  <p>
+    <label>Name</label><br>
+    <input name="warehouse_name" value="{% if warehouse %}{{ warehouse[1] }}{% endif %}" required>
+  </p>
+
+  <p>
+    <label>Location</label><br>
+    <input name="location" value="{% if warehouse %}{{ warehouse[2] }}{% endif %}" required>
+  </p>
+
+  <p>
+    <label>Phone</label><br>
+    <input name="phone_number" value="{% if warehouse %}{{ warehouse[3] }}{% endif %}">
+  </p>
+
+  <button class="btn" type="submit">{% if mode=='edit' %}Save{% else %}Create{% endif %}</button>
+</form>
+
+{% endblock %}

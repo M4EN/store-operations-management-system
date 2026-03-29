@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}{% if b %}Edit Branch{% else %}Add Branch{% endif %}{% endblock %}
+{% block content %}
+    <h1>{% if b %}Edit Branch{% else %}Add Branch{% endif %}</h1>
+    <form action="{{ action }}" method="post">
+      <p>
+          {% if b %}
+        <label>ID</label><br>
+          <input name="branch_id" value="{{ b[0] }}" readonly>
+        {% endif %}
+      </p>
+      <p>
+        <label>Name <span class="required">*</span></label><br>
+        <input name="branch_name" value="{{ b[1] or '' }}" required>
+      </p>
+      <p>
+        <label>Location<span class="required">*</span></label><br>
+        <input name="branch_location" value="{{ b[2] or '' }}" required>
+      </p>
+      <p>
+        <label>Phone Number<span class="required">*</span></label><br>
+        <input name="branch_phone" value="{{ b[3] or '' }}" required>
+      </p>
+      <p>
+        <button class="btn" type="submit">Save</button>
+        <a href={{ url_for('branches') }}><button type="button" class="btn-delete">Cancel</button></a>
+      </p>
+    </form>
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Products{% endblock %}
+{% block content %}
+<h1>Products</h1>
+
+<form action={{ url_for('products_add') }} method="get">
+    <button class="btn" type="submit">+</button>
+</form>
+
+<table>
+  <tr>
+    <th>ID</th><th>Name</th><th>Category</th><th>Purchase Price/KG</th><th>Sale Price/KG</th><th>⚙️</th>
+  </tr>
+  {% for p in products %}
+  <tr>
+    <td>{{ p[0] }}</td>
+    <td>{{ p[1] }}</td>
+    <td>{{ p[2] }}</td>
+    <td>{{ '%.2f'|format(p[3] or 0) }}</td>
+    <td>{{ '%.2f'|format(p[4] or 0) }}</td>
+    <td>
+      {% if session.get('access_level') == 'admin' %}
+      <form action={{ url_for('products_edit', product_id=p[0]) }} method="get">
+        <button class="btn" type="submit">&#128393</button>
+      </form>
+      <form action={{ url_for('products_delete', product_id=p[0]) }} method="post">
+        <button class="btn-delete" type="submit"
+                onclick="return confirm('Delete Product #{{p[0]}}?')">&#10006;</button>
+      </form>
+      {% else %}
+        View-only
+      {% endif %}
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+
+{% if deleted_products and session.get('access_level') == 'admin' %}
+<h3>Deleted Products</h3>
+<table>
+  <tr>
+    <th>ID</th><th>Name</th><th>Category</th><th>Purchase Price/KG</th><th>Sale Price/KG</th><th>⚙️</th>
+  </tr>
+  {% for p in deleted_products %}
+  <tr>
+    <td>{{ p[0] }}</td>
+    <td>{{ p[1] }}</td>
+    <td>{{ p[2] }}</td>
+    <td>{{ '%.2f'|format(p[3] or 0) }}</td>
+    <td>{{ '%.2f'|format(p[4] or 0) }}</td>
+    <td>
+      <form action={{ url_for('products_recover', product_id=p[0]) }} method="post">
+        <button class="btn" type="submit">Recover</button>
+      </form>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% endif %}
+
+{% endblock %}

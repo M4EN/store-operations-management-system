@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Sale #{{ sale[0] }}{% endblock %}
+{% block content %}
+<h1>Sale #{{ sale[0] }}</h1>
+<h3>Sale Info</h3>
+<table>
+    <tr><th>Customer</th><td>{{ sale[2] or 'Walk-in' }}</td></tr>
+    <tr><th>Employee</th><td>{{ sale[4] or '' }}</td></tr>
+    <tr><th>Branch</th><td>{{ sale[6] or '' }}</td></tr>
+    <tr><th>Sale Date</th><td>{{ sale[7] or '' }}</td></tr>
+    <tr><th>Payment Method</th><td>{{ sale[8] or '' }}</td></tr>
+    <tr><th>Overall Total</th><td>{{ "%.2f"|format(sale[9]) }}</td></tr>
+</table>
+
+<h3>Sale Details</h3>
+<table>
+    <th>Product</th><th>Quantity (KG)</th><th>Price per KG</th><th>Detail Total</th><th></th>
+        {% for detail in sale_details %}
+        <tr><td>{{ detail[2] }}</td><td>{{ "%.2f"|format(detail[3]) }}</td><td>{{ "%.2f"|format(detail[4]) }}</td><td>{{ "%.2f"|format(detail[5]) }}</td></tr>
+        {% endfor %}
+</table>
+<p>
+    <a href="{{ url_for('sales') }}"><button type="button" class="btn">Back to sales history</button></a>
+</p>
+{% endblock %}

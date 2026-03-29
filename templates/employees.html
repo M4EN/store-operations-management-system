@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Employees{% endblock %}
+{% block content %}
+<h1>Employees</h1>
+        {% with messages = get_flashed_messages() %}
+  {% if messages %}
+      {% for message in messages %}
+        <p>{{ message }}</p>
+      {% endfor %}
+  {% endif %}
+{% endwith %}
+<form action ={{ url_for('employees_add') }} method="get">
+<button class="btn" type="submit"> + </button></form>
+<table>
+  <tr>
+    <th>ID</th><th>Name</th><th>Phone</th><th>Date of Birth<br>YYYY-MM-DD</th><th>Position</th><th>Salary</th><th>Warehouse</th><th>Branch</th><th>⚙️</th>
+  </tr>
+  {%for emp in employees%}
+  <tr>
+    <td>{{ emp[0] }}</td><td>{{ emp[1] }}</td><td>{{ emp[2] }}</td><td>{{ emp[3] }}</td><td>{{ emp[4] or '' }}</td><td>{{ emp[5] or '' }}</td><td>{{ emp[7] or '' }}</td><td>{{ emp[9] or '' }}</td>
+    <td>
+<form action = {{ url_for('employees_edit', emp_id = emp[0]) }} method="get">
+  <button class="btn" type = "submit">&#128393</button></form>
+      <form action={{ url_for('employees_delete', emp_id = emp[0]) }} method="post">
+  <button class="btn-delete" type="submit" onclick="return confirm('Delete {{emp[1]}} ?')">X</button>
+</form>    </td>
+  </tr>
+  {% endfor %}
+</table>
+<form action = {{ url_for('employees_deleted')}} method="get">
+  <button class="btn-delete" type = "submit">View deleted employees</button></form>
+{% endblock %}

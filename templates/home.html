@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<h1>Dashboard</h1>
+    {% if session.get('branch_id') %}
+<h3>Branch Operations</h3>
+<div class="grid">
+    <a class="card" href="{{ url_for('sales_add') }}">Sales</a>
+    <a class="card" href="{{ url_for('customers') }}">Customers</a>
+</div>
+  {% endif %}
+<h3>Warehouse Operations</h3>
+<div class="grid">
+  {% if session.get('warehouse_id') %}
+    <a class="card" href="{{ url_for('purchases') }}">Purchases</a>
+    <a class="card" href="{{ url_for('suppliers') }}">Suppliers</a>
+    <a class="card" href="{{ url_for('transfer') }}">Transfer</a>
+    <a class="card" href="{{ url_for('payments') }}">Payments</a>
+  {% endif %}
+  <a class="card" href="{{ url_for('stock') }}">Stock</a>
+  <a class="card" href="{{ url_for('products') }}">Products</a>
+</div>
+<h3>Company Operations</h3>
+<div class="grid">
+  {% if session.get('access_level') == 'admin' %}
+      <a class="card" href="{{ url_for('reports') }}">Reports</a>
+      <a class="card" href="{{ url_for('employees') }}">Employees</a>
+  {% endif %}
+  <a class="card" href="{{ url_for('branches') }}">Branches</a>
+  <a class="card" href="{{ url_for('warehouses') }}">Warehouses</a>
+</div>
+{% endblock %}

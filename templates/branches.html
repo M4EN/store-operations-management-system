@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Branches{% endblock %}
+{% block content %}
+<h1>Branches</h1>
+        {% with messages = get_flashed_messages() %}
+  {% if messages %}
+      {% for message in messages %}
+        <p>{{ message }}</p>
+      {% endfor %}
+  {% endif %}
+{% endwith %}
+    {% if session.access_level == 'admin' %}
+        <form action ={{ url_for('branches_add') }} method="get">
+        <button class="btn" type="submit">+</button></form>
+        {% endif %}
+<table>
+  <tr>
+    <th>ID</th><th>Name</th><th>Location</th><th>Phone Number</th><th>⚙️</th>
+  </tr>
+  {%for b in branches%}
+  <tr>
+    <td>{{ b[0] }}</td><td>{{ b[1] }}</td><td>{{ b[2] }}</td><td>{{ b[3] }}</td>
+      {% if session.access_level == 'admin' %}
+    <td>
+    <form action = {{ url_for('branches_edit', br_id = b[0]) }} method="get">
+     <button class="btn" type = "submit">&#128393</button></form>
+        <form action={{ url_for('branches_delete', br_id = b[0]) }} method="post">
+        <button class="btn-delete" type="submit" onclick="return confirm('Delete {{b[1]}} ?')">X</button>
+        </form>    </td>         {% endif %}
+  </tr>
+  {% endfor %}
+</table>
+    {% if session.access_level == 'admin' %}
+<form action = {{ url_for('branches_deleted')}} method="get">
+  <button class="btn-delete" type = "submit">View deleted branches</button></form>
+    {% endif %}
+{% endblock %}

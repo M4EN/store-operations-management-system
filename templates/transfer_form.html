@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% block title %}{% if mode=='edit' %}Edit Transfer{% else %}New Transfer{% endif %}{% endblock %}
+{% block content %}
+<h1>{% if mode=='edit' %}Edit Transfer{% else %}New Transfer{% endif %}</h1>
+
+<form method="post">
+  {% if mode=='edit' %}
+  <p>
+    <label>Transfer ID</label><br>
+    <input name="transfer_id" value="{{ transfer[0] }}" readonly>
+  </p>
+  {% endif %}
+
+  <p>
+    <label>Transfer Date</label><br>
+    <input type="date" name="transfer_date" value="{% if transfer %}{{ transfer[1] }}{% endif %}">
+  </p>
+
+  {% if warehouses %}
+  <p>
+    <label>Warehouse: {{ session.get('warehouse_id') }}</label><br>
+  </p>
+  {% else %}
+    <input type="hidden" name="warehouse_id" value="{{ warehouse_id_for_form }}">
+  {% endif %}
+
+  <p>
+    <label>Branch</label><br>
+    <select name="branch_id" class="js-example-basic-single" required>
+      <option value="" disabled {% if not transfer %}selected{% endif %}>-- Select branch --</option>
+      {% for bid, bname in branches %}
+        <option value="{{ bid }}" {% if transfer and transfer[4]==bid %}selected{% endif %}>{{ bname }} - ID#{{ bid }}</option>
+      {% endfor %}
+    </select>
+  </p>
+
+  <h3>Transfer Details</h3>
+  <table id="details-table">
+    <tr>
+      <th>Product (available in warehouse)</th>
+      <th>Quantity</th>
+      <th>Remove</th>
+    </tr>
+
+    {% if transfer_details %}
+      {% for d in transfer_details %}
+      <tr>
+        <td>
+          <select name="product_id[]" onchange="setMaxQty(this)" class="js-example-basic-single">
+            <option value="" disabled>-- Select product --</option>
+            {% for pid, pname, qty in products %}
+              <option value="{{ pid }}" data-maxq="{{ qty }}"
+                      {% if d[2]==pid %}selected{% endif %}>
+                {{ pname }} - ID#{{ pid }} ({{ qty }})
+              </option>
+            {% endfor %}
+          </select>
+        </td>
+        <td><input type="number" step="0.01" name="quantity[]" value="{{ d[4] }}" required></td>
+        <td><button type="button" class="btn-delete" onclick="removeRow(this)">&#10006;</button></td>
+      </tr>
+      {% endfor %}
+    {% else %}
+      <tr>
+        <td>
+          <select name="product_id[]" onchange="setMaxQty(this)" class="js-example-basic-single">
+            <option value="" selected disabled>-- Select product --</option>
+            {% for pid, pname, qty in products %}
+              <option value="{{ pid }}" data-maxq="{{ qty }}">{{ pname }} - ID#{{ pid }} ({{ qty }})</option>
+            {% endfor %}
+          </select>
+        </td>
+        <td><input type="number" step="0.01" name="quantity[]" required></td>
+        <td><button type="button" class="btn-delete" onclick="removeRow(this)">&#10006;</button></td>
+      </tr>
+    {% endif %}
+  </table>
+
+  <button type="button" class="btn" onclick="addRow()">Add Line</button>
+  <button type="submit" class="btn">{% if mode=='edit' %}Save{% else %}Create{% endif %}</button>
+</form>
+
+<script>
+$(document).ready(function() {
+  $('.js-example-basic-single').select2();
+});
+
+function addRow() {
+  const table = document.getElementById('details-table');
+  const row = table.insertRow(-1);
+  row.innerHTML = `
+    <td>
+      <select name="product_id[]" onchange="setMaxQty(this)" class="js-example-basic-single" style="width: 100%">
+        <option value="" selected disabled>-- Select product --</option>
+        {% for pid, pname, qty in products %}
+          <option value="{{ pid }}" data-maxq="{{ qty }}">{{ pname }} - ID#{{ pid }} ({{ qty }})</option>
+        {% endfor %}
+      </select>
+    </td>
+    <td><input type="number" step="0.01" name="quantity[]" required></td>
+    <td><button type="button" class="btn-delete" onclick="removeRow(this)">&#10006;</button></td>
+  `;
+  $(row).find('.js-example-basic-single').select2();
+}
+
+function removeRow(btn) {
+  const row = btn.closest('tr');
+  const table = document.getElementById('details-table');
+  if (table.rows.length > 2) {
+    row.remove();
+  }
+}
+
+function setMaxQty(selectEl) {
+  const opt = selectEl.options[selectEl.selectedIndex];
+  const maxq = opt.getAttribute('data-maxq');
+  const row = selectEl.closest('tr');
+  const qtyInput = row.querySelector('input[name="quantity[]"]');
+  if (qtyInput && maxq) qtyInput.max = maxq;
+}
+</script>
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}{% if c %}Edit Customer{% else %}Add Customer{% endif %}{% endblock %}
+{% block content %}
+    <h1>{% if c %}Edit Customer{% else %}Add Customer{% endif %}</h1>
+    <form action="{{ action }}" method="post">
+      <p>
+          {% if c %}
+        <label>ID</label><br>
+          <input name="customer_id" value="{{ c[0] }}" readonly>
+        {% endif %}
+      </p>
+      <p>
+        <label>Name <span class="required">*</span></label><br>
+        <input name="customer_name" value="{{ c[1] or '' }}" required>
+      </p>
+      <p>
+        <label>Phone<span class="required">*</span></label><br>
+        <input name="phone_number" value="{{ c[2] or '' }}" required>
+      </p>
+      <p>
+        <label>Date Of Birth</label><br>
+        {% set y = '' %}
+        {% set mo = '' %}
+        {% set d = '' %}
+        {% if c and c[3] %}
+          {% set parts = c[3].split('-') %}
+          {% set y = parts[0] %}
+          {% set mo = parts[1] %}
+          {% set d = parts[2] %}
+        {% endif %}
+        <select name="dob_year">
+          <option value="">Year</option>
+          {% set current_year = now().year if now else 2026 %}
+          {% for year in range(current_year, 1850, -1) %}
+          <option value="{{ year }}" {% if y|int == year %}selected{% endif %}>{{year}}</option>
+          {% endfor %}
+        </select>
+        <select name="dob_month">
+          <option value="">Month</option>
+          {% for month in range(1,13) %}
+            <option value="{{month}}" {% if mo|int == month %}selected{% endif %}>{{month}}</option>
+          {% endfor %}
+        </select>
+        <select name="dob_day">
+          <option value="">Day</option>
+          {% for day in range(1,32) %}
+            <option value="{{day}}" {% if d|int == day %}selected{% endif %}>{{day}}</option>
+          {% endfor %}
+        </select>
+      </p>
+      <p>
+        <label>Email</label><br>
+        <input name="email" value="{{ c[4] or '' }}">
+      </p>
+      <p>
+        <button class="btn" type="submit">Save</button>
+        <a href={{ url_for('customers') }}><button type="button" class="btn-delete">Cancel</button></a>
+      </p>
+    </form>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Warehouses{% endblock %}
+{% block content %}
+<h1>Warehouses</h1>
+
+{% if session.get('access_level') == 'admin' %}
+<form action={{ url_for('warehouses_add') }} method="get">
+    <button class="btn" type="submit">+</button>
+</form>
+{% endif %}
+
+<table>
+  <tr>
+    <th>ID</th><th>Name</th><th>Location</th><th>Phone</th><th>⚙️</th>
+  </tr>
+  {% for w in warehouses %}
+  <tr>
+    <td>{{ w[0] }}</td><td>{{ w[1] }}</td><td>{{ w[2] }}</td><td>{{ w[3] or '' }}</td>
+    <td>
+      {% if session.get('access_level') == 'admin' %}
+      <form action={{ url_for('warehouses_edit', warehouse_id=w[0]) }} method="get">
+        <button class="btn" type="submit">&#128393</button>
+      </form>
+      <form action={{ url_for('warehouses_delete', warehouse_id=w[0]) }} method="post">
+        <button class="btn-delete" type="submit"
+                onclick="return confirm('Delete Warehouse #{{w[0]}}?')">&#10006;</button>
+      </form>
+      {% else %}
+        View-only
+      {% endif %}
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+
+{% endblock %}

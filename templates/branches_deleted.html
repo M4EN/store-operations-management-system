@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Deleted Branches{% endblock %}
+{% block content %}
+<h1>Deleted Branches</h1>
+            {% with messages = get_flashed_messages() %}
+  {% if messages %}
+      {% for message in messages %}
+        <p>{{ message }}</p>
+      {% endfor %}
+  {% endif %}
+{% endwith %}
+<table>
+  <tr>
+    <th>ID</th><th>Name</th><th>Location</th><th>Phone Number</th><th>⚙️</th>
+  </tr>
+  {%for b in branches%}
+  <tr>
+    <td>{{ b[0] }}</td><td>{{ b[1] }}</td><td>{{ b[2] }}</td><td>{{ b[3] }}</td><td>
+<form action = {{ url_for('branches_recover', br_id = b[0]) }} method="post">
+  <button class="btn" type = "submit">Recover</button></form></td>
+  </tr>
+  {% endfor %}
+</table>
+<form action ={{ url_for('branches') }} method="get">
+  <button class="btn" type = "submit">Go back to branches table</button></form>
+{% endblock %}

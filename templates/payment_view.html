@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Purchase #{{ purchase[0] }} - Payments{% endblock %}
+{% block content %}
+<h1>Purchase #{{ purchase[0] }}</h1>
+            {% with messages = get_flashed_messages() %}
+  {% if messages %}
+      {% for message in messages %}
+        <p>{{ message }}</p>
+      {% endfor %}
+  {% endif %}
+{% endwith %}
+<h3>Purchase Info</h3>
+<table>
+    <tr><th>Supplier</th><td>{{ purchase[2] or 'Unknown' }}</td></tr>
+    <tr><th>Employee</th><td>{{ purchase[4] or '' }}</td></tr>
+    <tr><th>Warehouse</th><td>{{ purchase[6] or '' }}</td></tr>
+    <tr><th>Purchase Date</th><td>{{ purchase[7] or '' }}</td></tr>
+    <tr><th>Overall Total</th><td>{{ '%.2f'|format(purchase[8] or 0) }}</td></tr>
+    <tr><th>Total Paid</th><td>{{ '%.2f'|format(total_paid) }}</td></tr>
+    <tr><th>Remaining</th><td>{{ '%.2f'|format(remaining) }}</td></tr>
+</table>
+<h3>Active Payments</h3>
+<table>
+        <tr><th>ID</th><th>Date</th><th>Amount</th><th>Method</th><th>Recorded By</th><th>⚙️</th></tr>
+    {% for p in payments %}
+        <tr><td>{{ p[0] }}</td><td>{{ p[1] }}</td><td>{{ '%.2f'|format((p[2] or 0)) }}</td><td>{{ p[3] or '' }}</td><td>{{ p[4] or '' }}</td>
+            <td>
+                <form method="post" action="{{ url_for('delete_payment', payment_id=p[0]) }}" style="display:inline;">
+                    <button type="submit" onclick="return confirm('Delete this payment? This cannot be undone.')" class="btn-delete">X</button>
+                </form>
+            </td>
+        </tr>
+    {% else %}
+        <tr><td colspan="6">No active payments recorded.</td></tr>
+    {% endfor %}
+</table>
+    <hr>
+    {% if deleted_payments %}
+    <p>
+    <a href="{{ url_for('payment_view', purchase_id=purchase[0]) }}">
+        <button type="button" class="btn-delete">Hide Deleted Payments</button>
+    </a></p>
+    {% else %}
+        <p>
+    <a href="{{ url_for('payment_view', purchase_id=purchase[0], show_deleted=1) }}">
+        <button type="button" class="btn-delete">View Deleted Payments</button>
+    </a></p>
+    {% endif %}
+{% if deleted_payments %}
+<h3>Deleted Payments</h3>
+<table>
+        <tr><th>ID</th><th>Date</th><th>Amount</th><th>Method</th><th>Recorded By</th></tr>
+    {% for dp in deleted_payments %}
+        <tr><td>{{ dp[0] }}</td><td>{{ dp[1] }}</td><td>{{ '%.2f'|format(dp[2] or 0) }}</td><td>{{ dp[3] or '' }}</td><td>{{ dp[4] or '' }}</td></tr>
+    {% endfor %}
+</table><hr>
+{% endif %}
+<p><a href="{{ url_for('payments') }}"><button type="button" class="btn">Back to payments</button>
+</a></p>
+{% endblock %}

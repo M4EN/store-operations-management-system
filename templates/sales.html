@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Sales{% endblock %}
+{% block content %}
+<h1>Sales</h1>
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+      {% for message in messages %}
+        <p>{{ message }}</p>
+      {% endfor %}
+  {% endif %}
+{% endwith %}
+<form action ={{ url_for('sales_add') }} method="get">
+<button class="btn" type="submit"> + </button></form>
+<table>
+  <tr>
+    <th>ID</th><th>Date</th><th>Branch</th><th>Employee<th>Customer</th><th>Payment Method</th><th>Total</th><th>⚙️</th>
+  </tr>
+  {%for s in sales%}
+  <tr>
+    <td>{{ s[0] }}</td><td>{{ s[7] }}</td><td>{{ s[6] }}</td><td>{{ s[4] }}</td><td>{{ s[2] or 'Walk-in Customer' }}</td><td>{{ s[8] }}</td><td>{{ s[9] }}</td>
+    <td>
+        <form action = {{ url_for('sales_view', sale_id = s[0]) }} method="get">
+  <button class="btn" type = "submit">&#128220;</button></form>
+                  {% if session.access_level == 'admin' %}
+<form action = {{ url_for('sales_edit', sale_id = s[0]) }} method="get">
+  <button class="btn" type = "submit">&#128393</button></form>
+      <form action={{ url_for('sales_delete', sale_id = s[0]) }} method="post">
+  <button class="btn-delete" type="submit" onclick="return confirm('Delete Sale #{{s[0]}} ?')">X</button>
+          {% endif %}
+</form>    </td>
+  </tr>
+  {% endfor %}
+</table>
+          {% if session.access_level == 'admin' %}
+<form action = {{ url_for('sales_deleted')}} method="get">
+  <button class="btn-delete" type = "submit">View deleted sales</button></form>
+    {% endif %}
+{% endblock %}

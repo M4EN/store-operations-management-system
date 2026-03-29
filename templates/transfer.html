@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Transfer{% endblock %}
+{% block content %}
+<h1>Transfer</h1>
+
+<form action={{ url_for('transfer_add') }} method="get">
+    <button class="btn" type="submit">+</button>
+</form>
+
+<table>
+  <tr>
+    <th>ID</th>
+    <th>Date</th>
+    <th>Warehouse</th>
+    <th>Branch</th>
+    <th>Employee</th>
+    <th>Total Qty</th>
+    <th>⚙️</th>
+  </tr>
+  {% for t in transfers %}
+  <tr>
+    <td>{{ t[0] }}</td>
+    <td>{{ t[1] }}</td>
+    <td>{{ t[3] }}</td>
+    <td>{{ t[5] }}</td>
+    <td>{{ t[7] }}</td>
+    <td>{{ t[8] }}</td>
+    <td>
+      <form action={{ url_for('transfer_view', transfer_id=t[0]) }} method="get">
+        <button class="btn" type="submit">View</button>
+      </form>
+      {% if session.get('access_level') == 'admin' %}
+      <form action={{ url_for('transfer_edit', transfer_id=t[0]) }} method="get">
+        <button class="btn" type="submit">&#128393</button>
+      </form>
+      <form action={{ url_for('transfer_delete', transfer_id=t[0]) }} method="post">
+        <button class="btn-delete" type="submit"
+                onclick="return confirm('Delete Transfer #{{t[0]}}?\nThis will revert stock movement.')">&#10006;</button>
+      </form>
+      {% endif %}
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}Reports{% endblock %}
+{% block content %}
+    <h1>Reports and Statistics</h1>
+    <form method="get">
+    <p>
+    <label>Choose Report</label><br>
+    <select name="r_id" onchange="this.form.submit()">
+        <option value ="" {% if selected_report_id == '' %}{% endif %}>- Select Report -</option>
+        {% for r_id, r in reports.items() %}
+        <option value ="{{ r_id }}" {% if selected_report_id == r_id %}selected{% endif %}>{{ r.name }}</option>
+        {% endfor %}
+    </select>
+    </p>
+    <p>
+    <label>Start Date</label><br>
+    {% if selected_report_id != "10" %}
+    <input type="date" name="start_date" value="{{ start_date }}">
+        </p>
+        <p>
+    <label>End Date</label><br>
+    <input type="date" name="end_date" value="{{ end_date }}"><br>
+        </p>
+    {% endif %}
+    {% if selected_report_id == "4" %}
+        <p>
+        <label>Branch</label><br>
+        <select name="branch_id">
+          <option value="">- Select Branch</option>
+          {% for bid, bname in branches %}
+            <option value="{{bid}}" {% if branch_id and branch_id==bid %}selected{% endif %}>{{bid}} - {{bname}}</option>
+          {% endfor %}
+        </select>
+      </p>
+    {% endif %}
+    <button type="submit" class="btn" name="generate" value="true">Generate</button>
+    </form>
+    {% if generate %}
+    {% if query_data %}
+    <h2>{{ selected_report.name }}</h2>
+    {% if selected_report.type == "table" %}
+    <table>
+    <tr>
+        {% for h in query_data[0].keys() %}
+        <th>{{ h }}</th>
+        {% endfor %}
+    </tr>
+        {% for d in query_data %}
+    <tr>
+            {% for value in d.values() %}
+            <td>{{ value }}</td>
+
+            {% endfor %}
+    </tr>
+        {% endfor %}
+    </table>
+        {% else %}
+        {% if chart_labels and chart_values %}
+        <canvas id = "chart"></canvas>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+        const myChart = new Chart("chart",{
+            type: "{{ selected_report.type }}",
+            data: {
+                labels: {{ chart_labels | tojson }},
+                datasets:[{
+                    data:{{ chart_values | tojson }}
+                }]
+            },
+            options: {
+            }
+        })
+        </script>
+            {% endif %}
+    {% endif %}
+    {% else %}
+        <p> No Data Found!</p>
+        {% endif %}
+    {% endif %}
+{% endblock %}

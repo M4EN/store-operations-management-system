@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Suppliers{% endblock %}
+{% block content %}
+<h1>Suppliers</h1>
+    {% with messages = get_flashed_messages() %}
+  {% if messages %}
+      {% for message in messages %}
+        <p>{{ message }}</p>
+      {% endfor %}
+  {% endif %}
+{% endwith %}
+<form action ={{ url_for('suppliers_add') }} method="get">
+<button class="btn" type="submit">+</button></form>
+<table>
+  <tr>
+    <th>ID</th><th>Name</th><th>Location</th><th>Phone Number</th><th>Email</th><th>⚙️</th>
+  </tr>
+  {%for s in suppliers%}
+  <tr>
+    <td>{{ s[0] }}</td><td>{{ s[1] }}</td><td>{{ s[2] }}</td><td>{{ s[3] or '' }}</td><td>{{ s[4] or '' }}</td>
+      <td>
+<form action = {{ url_for('suppliers_edit', sup_id = s[0]) }} method="get">
+  <button class="btn" type = "submit">&#128393</button></form>
+      {% if session.access_level =='admin' %}
+      <form action={{ url_for('suppliers_delete', sup_id = s[0]) }} method="post">
+  <button class="btn-delete" type="submit" onclick="return confirm('Delete {{s[1]}} ?\n This will remove this supplier from available suppliers')">X</button>
+</form>  {% endif %}  </td>
+  </tr>
+  {% endfor %}
+</table>
+    {% if session.access_level == 'admin' %}
+<form action = {{ url_for('suppliers_deleted')}} method="get">
+  <button class="btn-delete" type = "submit">View deleted suppliers</button></form>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Customers{% endblock %}
+{% block content %}
+<h1>Customers</h1>
+    {% with messages = get_flashed_messages() %}
+  {% if messages %}
+      {% for message in messages %}
+        <p>{{ message }}</p>
+      {% endfor %}
+  {% endif %}
+{% endwith %}
+<form action ={{ url_for('customers_add') }} method="get">
+<button class="btn" type="submit">+</button></form>
+<table>
+  <tr>
+    <th>ID</th><th>Name</th><th>Phone</th><th>Date of Birth<br>YYYY-MM-DD</th><th>Email</th><th>⚙️</th>
+  </tr>
+  {%for c in customers%}
+  <tr>
+    <td>{{ c[0] }}</td><td>{{ c[1] }}</td><td>{{ c[2] }}</td><td>{{ c[3] or '' }}</td><td>{{ c[4] or '' }}</td>
+      <td>
+<form action = {{ url_for('customers_edit', c_id = c[0]) }} method="get">
+  <button class="btn" type = "submit">&#128393</button></form>
+      {% if session.access_level =='admin' %}
+      <form action={{ url_for('customers_delete', c_id = c[0]) }} method="post">
+  <button class="btn-delete" type="submit" onclick="return confirm('Delete {{c[1]}} ?\n This will permanently delete the customer from the database.\nInformation related to this customer will not relate to the customer anymore.\nThis can\'t be undone!')">X</button>
+</form>  {% endif %}  </td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

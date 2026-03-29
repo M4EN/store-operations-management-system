@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Transfer View{% endblock %}
+{% block content %}
+<h1>Transfer #{{ transfer[0] }}</h1>
+
+<p>
+  <b>Date:</b> {{ transfer[1] }}<br>
+  <b>Warehouse:</b> {{ transfer[3] }} (ID#{{ transfer[2] }})<br>
+  <b>Branch:</b> {{ transfer[5] }} (ID#{{ transfer[4] }})<br>
+  <b>Employee:</b> {{ transfer[7] }} (ID#{{ transfer[6] }})<br>
+</p>
+
+<h3>Details</h3>
+<table>
+  <tr>
+    <th>Product</th>
+    <th>Quantity</th>
+  </tr>
+  {% for d in details %}
+  <tr>
+    <td>{{ d[3] }} (ID#{{ d[2] }})</td>
+    <td>{{ d[4] }}</td>
+  </tr>
+  {% endfor %}
+</table>
+
+{% endblock %}

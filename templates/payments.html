@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Unpaid Purchases{% endblock %}
+{% block content %}
+    {% if payAmountForPurchase %}
+        <form method="post" action="{{ url_for('payments_add') }}">
+            <input type="hidden" name="purchase_id" value="{{ payAmountForPurchase[0] }}">
+        <h3>Add Payment</h3>
+        <table>
+<tr><th>Purchase ID</th><th>Supplier</th><th>Date</th><th>Total</th><th>Paid</th><th>Pay Amount</th><th>Pay Method</th><th>⚙️</th></tr>
+<tr><td>{{ payAmountForPurchase[0] }}</td><td>{{ payAmountForPurchase[2] }}</td><td>{{ payAmountForPurchase[1] }}</td><td>{{ '%.2f'|format(payAmountForPurchase[3]) }}</td><td>{{ '%.2f'|format(payAmountForPurchase[4]) }}</td>
+    <td><input type="number" step="0.01" name="amount" value="{{ '%.2f'|format(payAmountForPurchase[3] - payAmountForPurchase[4]) }}" max="{{payAmountForPurchase[3]-payAmountForPurchase[4]}}" min="0.1" required></td>
+    <td><select name="method">
+        <option>Cash</option>
+        <option>Bank</option>
+        <option>Check</option>
+        <option>Other</option></select></td>
+    <td>
+        <button type="submit" class="btn">Pay</button>
+        <a href="{{ url_for('payments') }}"><button type="button" class="btn-delete">Cancel</button></a>
+    </td>
+</tr>
+</table>
+        </form>
+        <hr>
+    {% endif %}
+        <h3>Unpaid Purchases</h3>
+<table>
+<tr><th>Purchase ID</th><th>Supplier</th><th>Date</th><th>Total</th><th>Paid</th><th>Remaining</th><th>⚙️</th></tr>
+{% for p in purchases %}
+<tr><td>{{ p[0] }}</td><td>{{ p[2] }}</td><td>{{ p[1] }}</td><td>{{ '%.2f'|format(p[3]) }}</td><td>{{ '%.2f'|format(p[4]) }}</td><td>{{ '%.2f'|format(p[3] - p[4]) }}</td>
+    <td>
+        <a href="{{ url_for('payment_view', purchase_id=p[0]) }}" ><button type="button" class="btn">&#128393</button></a>
+        <a href="{{ url_for('payments', pid=p[0]) }}"><button type="button" class="btn">Pay</button></a>
+    </td>
+</tr>
+{% else %}
+<tr><td colspan="7">No unpaid purchases.</td></tr>
+{% endfor %}
+</table>
+    <hr>
+    {% if completed_purchases %}
+        <a href="{{ url_for('payments') }}"><button type="button" class="btn-delete">Hide Fully Paid Purchases</button></a>
+    {% else %}
+    <a href="{{ url_for('payments', show_completed=1) }}"><button type="button" class="btn">View Fully Paid Purchases</button></a>
+    {% endif %}
+    {% if completed_purchases %}
+<h3>Fully paid purchases</h3>
+<table>
+<tr>
+    <th>Purchase ID</th><th>Supplier</th><th>Date</th><th>Total</th><th>Paid</th><th>Remaining</th><th>⚙️</th>
+</tr>
+{% for p in completed_purchases %}
+<tr><td>{{ p[0] }}</td><td>{{ p[2] }}</td><td>{{ p[1] }}</td><td>{{ '%.2f'|format(p[3]) }}</td><td>{{ '%.2f'|format(p[4]) }}</td><td>{{ '%.2f'|format(p[3] - p[4]) }}</td>
+    <td>
+        <a href="{{ url_for('payment_view', purchase_id=p[0]) }}">
+            <button type="button" class="btn">&#128220</button>
+        </a>
+    </td>
+</tr>
+{% else %}
+<tr><td colspan="7">No fully paid purchases.</td></tr>
+{% endfor %}
+</table>
+{% endif %}
+{% endblock %}

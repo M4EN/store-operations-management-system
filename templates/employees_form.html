@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block title %}{% if emp %}Edit Employee{% else %}Add Employee{% endif %}{% endblock %}
+{% block content %}
+    <h1>{% if emp %}Edit Employee{% else %}Add Employee{% endif %}</h1>
+    <form action="{{ action }}" method="post">
+      <p>
+          {% if emp %}
+        <label>ID</label><br>
+          <input name="employee_id" value="{{ emp[0] }}" readonly>
+        {% endif %}
+      </p>
+      <p>
+        <label>Name <span class="required">*</span></label><br>
+        <input name="employee_name" value="{{ emp[1] or '' }}" required>
+      </p>
+      <p>
+        <label>Phone<span class="required">*</span></label><br>
+        <input name="phone_number" value="{{ emp[2] or '' }}" required>
+      </p>
+      <p>
+        <label>Date Of Birth</label><br>
+        {% set y = '' %}
+        {% set mo = '' %}
+        {% set d = '' %}
+        {% if emp and emp[3] %}
+          {% set parts = emp[3].split('-') %}
+          {% set y = parts[0] %}
+          {% set mo = parts[1] %}
+          {% set d = parts[2] %}
+        {% endif %}
+        <select name="dob_year">
+          <option value="">Year</option>
+          {% set current_year = now().year if now else 2026 %}
+          {% for year in range(current_year, 1850, -1) %}
+          <option value="{{ year }}" {% if y|int == year %}selected{% endif %}>{{year}}</option>
+          {% endfor %}
+        </select>
+        <select name="dob_month">
+          <option value="">Month</option>
+          {% for month in range(1,13) %}
+            <option value="{{month}}" {% if mo|int == month %}selected{% endif %}>{{month}}</option>
+          {% endfor %}
+        </select>
+        <select name="dob_day">
+          <option value="">Day</option>
+          {% for day in range(1,32) %}
+            <option value="{{day}}" {% if d|int == day %}selected{% endif %}>{{day}}</option>
+          {% endfor %}
+        </select>
+      </p>
+      <p>
+        <label>Position</label><br>
+        <input name="position" value="{{ emp[4] or '' }}">
+      </p>
+      <p>
+        <label>Salary</label><br>
+        <input name="salary" value="{{ emp[5] or '' }}">
+      </p>
+      <p>
+        <label>Warehouse</label><br>
+        <select name="warehouse_id">
+          <option value="">None</option>
+          {% for wid, wname in warehouses %}
+            <option value="{{wid}}" {% if emp and emp[6]==wid %}selected{% endif %}>{{wid}}-{{wname}}</option>
+          {% endfor %}
+        </select>
+      </p>
+
+      <p>
+        <label>Branch</label><br>
+        <select name="branch_id">
+          <option value="">None</option>
+          {% for bid, bname in branches %}
+            <option value="{{bid}}" {% if emp and emp[8]==bid %}selected{% endif %}>{{bid}} - {{bname}}</option>
+          {% endfor %}
+        </select>
+      </p>
+        {% if emp %}
+            <p>
+            <label>Password</label><br>
+            <input name = "user_password" type="password" value={{ emp[12] }}>
+            </p>
+        {% endif %}
+    <p>
+        <label>Access Level</label><br>
+        <select name="access_level">
+            <option value="normal" {% if emp[11] != 'admin' %}selected{% endif %}>Normal</option>
+            <option value="admin" {% if emp[11] == 'admin' %}selected{% endif %}>Admin</option>
+        </select>
+    </p>
+      <p>
+        <button class="btn" type="submit">Save</button>
+        <a href={{ url_for('employees') }}><button type="button" class="btn-delete">Cancel</button></a>
+      </p>
+    </form>
+{% endblock %}

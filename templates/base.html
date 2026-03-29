@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>{% block title %}{% endblock %}</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header>
+    <div class="header-left">
+      {% if request.path != '/home' %}
+          <a href="/home"><button>Back to Home</button></a>
+      {% endif %}
+    </div>
+    <div class="header-center">
+        <a href="/home"><img src="{{ url_for('static', filename='images/header_logo.png') }}" alt="Logo" class="header-logo"></a>
+    </div>
+    <div class="header-right">
+        <div class="employee_info">
+            {{ session.get('user_name') }} #{{ session.get('user_id') }}<br>
+            {% if session.get('access_level')=='admin' %}Admin -{% endif %}{% if session.get('branch_id') %} Branch #{{ session.get('branch_id') }} -{% endif %}{% if session.get('warehouse_id') %} Warehouse #{{ session.get('warehouse_id') }}{% endif %}
+        </div>
+      <form method="POST" action="{{ url_for('logout') }}">
+        <button type="submit">Log Out</button>
+      </form>
+    </div>
+  </header>
+  <main>
+      {% block content %}{% endblock %}
+  </main>
+<footer>
+<p> &copy; 2026 Abnaa Arabi Al-Khatib Company</p>
+</footer>
+</body>
+</html>

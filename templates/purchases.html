@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}Purchases{% endblock %}
+{% block content %}
+<h1>Purchases</h1>
+
+<form action={{ url_for('purchases_add') }} method="get">
+    <button class="btn" type="submit">+</button>
+</form>
+
+<table>
+  <tr>
+    <th>ID</th>
+    <th>Date</th>
+    <th>Warehouse</th>
+    <th>Supplier</th>
+    <th>Employee</th>
+    <th>Total</th>
+    <th>Paid</th>
+    <th>Remaining</th>
+    <th>⚙️</th>
+  </tr>
+
+  {% for p in purchases %}
+  <tr>
+    <td>{{ p[0] }}</td>
+    <td>{{ p[1] }}</td>
+    <td>{{ p[3] }}</td>
+    <td>{{ p[5] }}</td>
+    <td>{{ p[7] }}</td>
+    <td>{{ '%.2f'|format(p[8] or 0) }}</td>
+    <td>{{ '%.2f'|format(p[9] or 0) }}</td>
+    <td>{{ '%.2f'|format((p[8] or 0) - (p[9] or 0)) }}</td>
+    <td>
+      <form action={{ url_for('purchases_view', purchase_id=p[0]) }} method="get">
+        <button class="btn" type="submit">View</button>
+      </form>
+
+      {% if session.get('access_level') == 'admin' %}
+      <form action={{ url_for('purchases_edit', purchase_id=p[0]) }} method="get">
+        <button class="btn" type="submit">&#128393</button>
+      </form>
+
+      <form action={{ url_for('purchases_delete', purchase_id=p[0]) }} method="post">
+        <button class="btn-delete" type="submit"
+                onclick="return confirm('Delete Purchase #{{p[0]}}?')">&#10006;</button>
+      </form>
+      {% endif %}
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+
+{% if deleted_purchases and session.get('access_level') == 'admin' %}
+<h3>Deleted Purchases</h3>
+
+<table>
+  <tr>
+    <th>ID</th>
+    <th>Date</th>
+    <th>Warehouse</th>
+    <th>Supplier</th>
+    <th>Employee</th>
+    <th>Total</th>
+    <th>Paid</th>
+    <th>Remaining</th>
+    <th>⚙️</th>
+  </tr>
+
+  {% for p in deleted_purchases %}
+  <tr>
+    <td>{{ p[0] }}</td>
+    <td>{{ p[1] }}</td>
+    <td>{{ p[3] }}</td>
+    <td>{{ p[5] }}</td>
+    <td>{{ p[7] }}</td>
+    <td>{{ '%.2f'|format(p[8] or 0) }}</td>
+    <td>{{ '%.2f'|format(p[9] or 0) }}</td>
+    <td>{{ '%.2f'|format((p[8] or 0) - (p[9] or 0)) }}</td>
+    <td>
+      <form action={{ url_for('purchases_recover', purchase_id=p[0]) }} method="post">
+        <button class="btn" type="submit">Recover</button>
+      </form>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% endif %}
+
+{% endblock %}

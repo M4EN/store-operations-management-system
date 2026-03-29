@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}{% if s %}Edit Supplier{% else %}Add Supplier{% endif %}{% endblock %}
+{% block content %}
+    <h1>{% if s %}Edit Supplier{% else %}Add Supplier{% endif %}</h1>
+    <form action="{{ action }}" method="post">
+      <p>
+          {% if s %}
+        <label>ID</label><br>
+          <input name="supplier_id" value="{{ s[0] }}" readonly>
+        {% endif %}
+      </p>
+      <p>
+        <label>Name <span class="required">*</span></label><br>
+        <input name="supplier_name" value="{{ s[1] or '' }}" required>
+      </p>
+      <p>
+        <label>Location<span class="required">*</span></label><br>
+        <input name="supplier_location" value="{{ s[2] or '' }}" required>
+      </p>
+      <p>
+        <label>Phone Number<span class="required">*</span></label><br>
+        <input name="supplier_phone" value="{{ s[3] or '' }}" required>
+      </p>
+      <p>
+        <label>Email<span class="required">*</span></label><br>
+        <input name="supplier_email" value="{{ s[4] or '' }}" required>
+      </p>
+      <p>
+        <button class="btn" type="submit">Save</button>
+        <a href={{ url_for('suppliers') }}><button type="button" class="btn-delete">Cancel</button></a>
+      </p>
+    </form>
+{% endblock %}

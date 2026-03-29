@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Sales{% endblock %}
+{% block content %}
+<h1>Deleted Sales</h1>
+<table>
+  <tr>
+    <th>ID</th><th>Date</th><th>Branch</th><th>Employee<th>Customer</th><th>Payment Method</th><th>Total</th><th>⚙️</th>
+  </tr>
+  {%for s in sales%}
+  <tr>
+    <td>{{ s[0] }}</td><td>{{ s[7] }}</td><td>{{ s[6] }}</td><td>{{ s[4] }}</td><td>{{ s[2] or 'Walk-in Customer' }}</td><td>{{ s[8] }}</td><td>{{ s[9] }}</td>
+    <td>
+<form action = {{ url_for('sales_view', sale_id = s[0]) }} method="get">
+  <button class="btn" type = "submit">&#128220</button></form>
+        <form action = {{ url_for('sales_recover', sale_id = s[0]) }} method="get">
+  <button class="btn" type = "submit">Recover</button></form>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+<form action = {{ url_for('sales')}} method="get">
+  <button class="btn" type = "submit">Go back to sales</button></form>
+{% endblock %}
